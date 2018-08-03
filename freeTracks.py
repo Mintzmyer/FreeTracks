@@ -14,6 +14,8 @@ from subprocess import call
 from sys import argv
 import os
 
+failedSongs = []
+
 def main():
 	saveDir = '/Users/<usr>/Music/8TracksVids'
 	convDir = '/Users/<usr>/Music/8Tracks'
@@ -22,6 +24,10 @@ def main():
 			if (("Album:" not in line) and ("Year:" not in line)):
 				getSong(line, saveDir)
 	convert(saveDir, convDir)
+	if failedSongs:
+		print("The following songs were unable to be downloaded:")
+		for song in failedSongs:
+			print(song)
 
 def getSong(title, directory):
 	print("Downloading " + title)
@@ -32,6 +38,7 @@ def getSong(title, directory):
 		yt.streams.filter(subtype='mp4').first().download(directory)
 	except:
 		print("Could not find a valid url for " + title)
+		failedSongs.append(title)
 		return
 
 def getUrls(search):
